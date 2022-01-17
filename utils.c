@@ -27,10 +27,6 @@ int** need;
 int* thread_order;
 
 
-void deallocate_resource();
-void allocation_resource();
-
-
 bool need_lt_work(int need_i[], int work[]) 
 {
     for (int i = 0; i < num_resources; i++)
@@ -264,7 +260,6 @@ void allocation_resource()
         }
 }
 
-
 void deallocate_resource()
 {
     if (num_resources == 0)
@@ -292,7 +287,35 @@ void add_resource()
         scanf("%d", &num);
         available[i] += num;
     }
+    
+    printf("%s", "complete!");
 }
+
+
+void add_thread()
+{
+    num_threads++;
+
+    printf("%s", "Enter alloction resources for a new thread: ");
+    allocation = (int**) realloc(allocation, num_threads * sizeof(int*));
+    allocation[num_threads - 1] = (int*) malloc(num_resources * sizeof(int));
+    for(int i = 0; i < num_resources; ++i)
+        scanf("%d", &allocation[num_threads - 1][i]);
+
+    printf("%s", "Enter maximum resources for a new thread request: ");
+    maximum = (int**) realloc(maximum, num_threads * sizeof(int*));
+    maximum[num_threads - 1] = (int*) malloc(num_resources * sizeof(int));
+    for(int i = 0; i < num_resources; ++i)
+        scanf("%d", &maximum[num_threads - 1][i]);
+
+    need = (int**) realloc(need, num_threads * sizeof(int*));
+    need[num_threads - 1] = (int*) malloc(num_resources * sizeof(int)); 
+    for(int i = 0; i < num_resources; ++i)
+        need[num_threads - 1][i] = allocation[num_threads - 1][i] - maximum[num_threads - 1][i];
+
+    printf("%s", "Complete!");
+}
+
 
 void menu()
 {
@@ -303,8 +326,9 @@ void menu()
         printf("%s\n", "2. Request");
         printf("%s\n", "3. Release");
         printf("%s\n", "4. Add resource");
-        printf("%s\n", "5. Print state");
-        printf("%s\n", "6. Exit");
+        printf("%s\n", "5. Add thread");
+        printf("%s\n", "6. Print state");
+        printf("%s\n", "7. Exit");
         printf("%s\n", "=========================================================");
 
         char choice;
@@ -353,13 +377,16 @@ void menu()
         else if (choice == '4')
         {
             add_resource();
-            printf("%s", "complete!");
         }
         else if (choice == '5')
         {
-            print_state();
+            add_thread();
         }
         else if (choice == '6')
+        {
+            print_state();
+        }
+        else if (choice == '7')
         {
             printf("%s", "Exiting !\n");
             break;
