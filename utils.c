@@ -388,10 +388,12 @@ void menu()
 
             printf("%s ", "Enter the thread id: ");
             scanf("%d", &id);
-            printf("%s ", "Enter the release: ");
+            printf("%s ", "Enter the amount of release: ");
             for(int i = 0; i < num_resources; ++i)
+            {   
+                printf("\tResource %d:\n", i+1);
                 scanf("%d", &req[i]);
-
+            }
             int done = release_resources(id, req);
         }
         else if (choice == '4')
