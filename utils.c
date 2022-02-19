@@ -227,6 +227,7 @@ void allocation_resource()
 {
     // Memory allocation
     available = (int*) malloc(num_resources * sizeof(int));
+    
     maximum = (int**) malloc(num_threads * sizeof(int*));
     for(int i = 0; i < num_threads; ++i)
         maximum[i] = (int*) malloc(num_resources * sizeof(int));
@@ -241,23 +242,34 @@ void allocation_resource()
 
     thread_order = (int*) malloc(num_threads * sizeof(int));
 
-    printf("%s", "Available: \n");
+    printf("%s", "Available Resources: \n");
     for (int i = 0; i < num_resources; ++i)
+    {   
+        printf("\tResource %d:", i+1);
         scanf("%d", &available[i]);
-    printf("%s", "Maximum: \n");
+    }
+    printf("\nMaximum Demand of Threads:\n");
     for(int i = 0; i < num_threads; ++i)
+    {   
+        printf("Thread %d: \n", i+1);
         for(int j = 0; j < num_resources; ++j)
         {
+            printf("\tResource %d:", j+1);
             scanf("%d", &maximum[i][j]);
         }
+    }
 
-    printf("%s", "Allocation: \n");
+    printf("%s", "\nAllocated Resources for each Thread:\n");
     for(int i = 0; i < num_threads; ++i)
+    {   
+        printf("Thread %d: \n", i+1);
         for(int j = 0; j < num_resources; ++j)
         {
+            printf("\tResource %d:", j+1);
             scanf("%d", &allocation[i][j]);
             need[i][j] = maximum[i][j] - allocation[i][j];
         }
+    }
 }
 
 void deallocate_resource()
@@ -288,7 +300,7 @@ void add_resource()
         available[i] += num;
     }
     
-    printf("%s", "complete!");
+    printf("%s", "Resouces Added!");
 }
 
 
@@ -306,14 +318,16 @@ void add_thread()
     maximum = (int**) realloc(maximum, num_threads * sizeof(int*));
     maximum[num_threads - 1] = (int*) malloc(num_resources * sizeof(int));
     for(int i = 0; i < num_resources; ++i)
+    {   
+        printf("\tResource %d:", i);
         scanf("%d", &maximum[num_threads - 1][i]);
-
+    }
     need = (int**) realloc(need, num_threads * sizeof(int*));
     need[num_threads - 1] = (int*) malloc(num_resources * sizeof(int)); 
     for(int i = 0; i < num_resources; ++i)
         need[num_threads - 1][i] = allocation[num_threads - 1][i] - maximum[num_threads - 1][i];
 
-    printf("%s", "Complete!");
+    printf("New Thread %d Added!", num_threads);
 }
 
 
@@ -344,18 +358,24 @@ void menu()
         else if (choice == '2')
         {
             int id;
-            int* req = (int*) malloc(num_resources * sizeof(int));
-
             printf("%s ", "Enter the thread id: ");
             scanf("%d", &id);
-            printf("%s ", "Enter the request: ");
+            if(id>num_threads)
+            {
+                printf("Exceed the number of threads\rRetype, please!");
+                continue;
+            }
+            int* req = (int*) malloc(num_resources * sizeof(int));
+            printf("%s ", "Enter the request:\n");
             for(int i = 0; i < num_resources; ++i)
+            {   
+                printf("\tResource %d", i+1);
                 scanf("%d", &req[i]);
-
-            int done = request_resources(id, req);
+            }
+            int done = request_resources(id-1, req);
             if (done != 0)
             {
-                printf("%sThread %d Requests [%s\b] -> %s\n", FGR_GREEN "*" RESET, id + 1, req_to_str(req), BGR_RED "not accepted" RESET);
+                printf("%sThread %d Requests [%s\b] -> %s\n", FGR_GREEN "*" RESET, id, req_to_str(req), BGR_RED "not accepted" RESET);
             }
             else
                 printf(" ");
