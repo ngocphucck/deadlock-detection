@@ -188,6 +188,10 @@ void print_state()
         printf("\n");
     }
     printf("=============================================\n");
+    if (!is_safe_state())
+    {
+        printf("%s\n", BGR_RED "THIS IS NOT A SAFE STATE, ADD MORE RESOURCES OR RELEASE SOME !" RESET);
+    }
 }
 
 void print_available()
